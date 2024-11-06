@@ -83,9 +83,9 @@ class MyHomePage extends StatelessWidget {
             indicatorColor: Colors.white,
             onTap: (index) => _onTabTapped(context, index), // Memanggil metode SnackBar saat tab di-tap
             tabs: const [
-              Tab(icon: Icon(Icons.add_shopping_cart), text: 'Lihat Product'),
-              Tab(icon: Icon(Icons.add), text: 'Add Product'),
-              Tab(icon: Icon(Icons.logout), text: 'Logout'),
+              Tab(icon: Icon(Icons.add_shopping_cart,color: Colors.greenAccent,), text: 'Lihat Product'),
+              Tab(icon: Icon(Icons.add, color: Colors.yellow,), text: 'Add Product'),
+              Tab(icon: Icon(Icons.logout, color: Colors.red,), text: 'Logout'),
             ],
           ),
         ),
