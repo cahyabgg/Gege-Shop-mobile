@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gege_shop_mobile/screens/list_product.dart';
-import 'package:gege_shop_mobile/screens/menu.dart';
 import 'package:gege_shop_mobile/screens/product_form.dart';
+import 'package:gege_shop_mobile/screens/list_product.dart';
+import 'package:gege_shop_mobile/screens/menu.dart'; // Adjust the import as needed
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -42,20 +42,19 @@ class LeftDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.home_outlined),
             title: const Text('Halaman Utama'),
-            // Bagian redirection ke MyHomePage
             onTap: () {
               Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MyHomePage(),
-                  ));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MyHomePage(),
+                ),
+              );
             },
           ),
           ListTile(
             leading: const Icon(Icons.library_books_rounded),
             title: const Text('Daftar Product'),
             onTap: () {
-              // Route menu ke halaman buku
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const ProductPage()),
@@ -65,13 +64,13 @@ class LeftDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.mood),
             title: const Text('Tambah Product'),
-            // Bagian redirection ke MoodEntryFormPage
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ProductFormPage(),
-                  ));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProductFormPage(),
+                ),
+              );
             },
           ),
         ],

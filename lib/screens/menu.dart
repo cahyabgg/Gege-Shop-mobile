@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gege_shop_mobile/widgets/left_drawer.dart';
+import 'package:gege_shop_mobile/screens/product_form.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -53,6 +54,10 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Widget _buildSecondTabContent(){
+    return ProductFormPage();
+  }
+
   // Method to handle actions when a TabBar tab is tapped
   void _onTabTapped(BuildContext context, int index) {
     if (index == 0) {
@@ -85,12 +90,11 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: Column(
           children: [
-            _buildInfoSection(),
             Expanded(
               child: TabBarView(
                 children: [
                   _buildFirstTabContent(),
-                  _buildTabContent(Icons.add),
+                  _buildSecondTabContent(),
                   _buildTabContent(Icons.logout),
                 ],
               ),

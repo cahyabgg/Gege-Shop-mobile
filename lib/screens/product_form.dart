@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gege_shop_mobile/widgets/left_drawer.dart';
 
 class ProductFormPage extends StatefulWidget {
   const ProductFormPage({super.key});
@@ -13,25 +12,22 @@ class _ProductFormPageState extends State<ProductFormPage> {
   String _name = "";
   String _description = "";
   int _price = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Text(
-            'Form Tambah Mood Kamu Hari ini',
-          ),
-        ),
+        title: const Text('Tambah Product'),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
-      drawer: const LeftDrawer(),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Name Field
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
@@ -55,6 +51,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                   },
                 ),
               ),
+              // Price Field
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
@@ -65,6 +62,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                   ),
+                  keyboardType: TextInputType.number, // Ensure numeric keyboard
                   onChanged: (String? value) {
                     setState(() {
                       _price = int.tryParse(value!) ?? 0;
@@ -75,12 +73,13 @@ class _ProductFormPageState extends State<ProductFormPage> {
                       return "Price tidak boleh kosong!";
                     }
                     if (int.tryParse(value) == null) {
-                      return "Mood intensity harus berupa angka!";
+                      return "Price harus berupa angka!";
                     }
                     return null;
                   },
                 ),
               ),
+              // Description Field
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
@@ -91,6 +90,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                   ),
+                  maxLines: 3, // Allow multiple lines for description
                   onChanged: (String? value) {
                     setState(() {
                       _description = value!;
@@ -104,6 +104,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                   },
                 ),
               ),
+              // Save Button
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
@@ -124,8 +125,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Mood: $_name'),
-                                    // TODO: Munculkan value-value lainnya
+                                    Text('Nama: $_name'),
+                                    Text('Price: $_price'),
+                                    Text('Description: $_description'),
                                   ],
                                 ),
                               ),
