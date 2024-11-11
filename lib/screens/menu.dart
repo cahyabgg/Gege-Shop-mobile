@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:gege_shop_mobile/widgets/left_drawer.dart';
 
-class MyHomePage extends StatelessWidget {
-  // Konstruktor tanpa `const` karena variabel `tabNames` tidak bisa menjadi konstanta
-  MyHomePage({super.key});
 
-  // Nama-nama tab yang akan ditampilkan pada SnackBar saat tab dipilih
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
+  @override
+  _MyHomePageState createState() =>
+      _MyHomePageState(); // Implement createState method
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   final List<String> tabNames = ["Lihat Product", "Add Product", "Logout"];
+  final String npm = '2306275380';
+  final String name = 'Cahya Bagus Gautama Gozales';
+  final String className = 'PBP C';
 
-  final String npm = '2306275380'; // Npm
-  final String name = 'Cahya Bagus Gautama Gozales'; //Nama
-  final String className = 'PBP C'; // Kelas
+  bool _isExpanded = false;
 
-  // Metode untuk membangun bagian InfoCard yang ditampilkan di atas
+  // Method to build the InfoCard section displayed at the top
   Widget _buildInfoSection() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -26,27 +33,46 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  // Metode untuk membangun konten utama di setiap tab
+  // Method to build the main content in each tab
   Widget _buildTabContent(IconData icon) {
     return Center(
       child: Icon(icon, size: 100, color: Colors.black),
     );
   }
 
-  // Metode untuk menangani aksi ketika TabBar di-tap dan menampilkan SnackBar
+  // Method to build the first tab content with animation
+  Widget _buildFirstTabContent() {
+    return Center(
+      child: AnimatedContainer(
+        duration: const Duration(seconds: 1),
+        width: _isExpanded ? 200.0 : 100.0,
+        height: _isExpanded ? 200.0 : 100.0,
+        color: Colors.blue,
+        curve: Curves.elasticInOut,
+      ),
+    );
+  }
+
+  // Method to handle actions when a TabBar tab is tapped
   void _onTabTapped(BuildContext context, int index) {
+    if (index == 0) {
+      setState(() {
+        _isExpanded = !_isExpanded; // Toggle animation for the first tab
+      });
+    }
+
     final selectedTab = tabNames[index];
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text("Kamu telah menekan tab $selectedTab!")));
+      ..showSnackBar(
+          SnackBar(content: Text("Kamu telah menekan tab $selectedTab!")));
   }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3, // Jumlah tab yang digunakan
+      length: 3,
       child: Scaffold(
-        // AppBar dengan judul statis
         appBar: AppBar(
           title: const Text(
             'Gege Shop',
@@ -57,44 +83,46 @@ class MyHomePage extends StatelessWidget {
           ),
           backgroundColor: Theme.of(context).colorScheme.primary,
         ),
-        
-        // Body yang terdiri dari bagian InfoCard yang tetap dan TabBarView yang dinamis
         body: Column(
           children: [
-            _buildInfoSection(), // Bagian InfoCard yang tetap di atas
+            _buildInfoSection(),
             Expanded(
               child: TabBarView(
                 children: [
-                  _buildTabContent(Icons.add_shopping_cart), // Tab Lihat Product
-                  _buildTabContent(Icons.add),               // Tab Add Product
-                  _buildTabContent(Icons.logout),            // Tab Logout
+                  _buildFirstTabContent(),
+                  _buildTabContent(Icons.add),
+                  _buildTabContent(Icons.logout),
                 ],
               ),
             ),
           ],
         ),
-        
-        // Bottom navigation bar yang berisi TabBar
         bottomNavigationBar: Container(
           color: Theme.of(context).colorScheme.primary,
           child: TabBar(
             labelColor: Colors.white,
             unselectedLabelColor: Colors.white70,
             indicatorColor: Colors.white,
-            onTap: (index) => _onTabTapped(context, index), // Memanggil metode SnackBar saat tab di-tap
+            onTap: (index) => _onTabTapped(context, index),
             tabs: const [
-              Tab(icon: Icon(Icons.add_shopping_cart,color: Colors.greenAccent,), text: 'Lihat Product'),
-              Tab(icon: Icon(Icons.add, color: Colors.yellow,), text: 'Add Product'),
-              Tab(icon: Icon(Icons.logout, color: Colors.red,), text: 'Logout'),
+              Tab(
+                  icon:
+                      Icon(Icons.add_shopping_cart, color: Colors.greenAccent),
+                  text: 'Lihat Product'),
+              Tab(
+                  icon: Icon(Icons.add, color: Colors.yellow),
+                  text: 'Add Product'),
+              Tab(icon: Icon(Icons.logout, color: Colors.red), text: 'Logout'),
             ],
           ),
         ),
+      drawer: const LeftDrawer(),
       ),
     );
   }
 }
 
-// Widget InfoCard untuk menampilkan title dan content
+// Widget InfoCard for displaying title and content
 class InfoCard extends StatelessWidget {
   final String title;
   final String content;
