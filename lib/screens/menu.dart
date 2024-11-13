@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildSecondTabContent(){
-    return ProductFormPage();
+    return const ProductFormPage();
   }
 
   // Method to handle actions when a TabBar tab is tapped
