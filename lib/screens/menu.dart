@@ -1,77 +1,93 @@
 import 'package:flutter/material.dart';
+import 'package:gege_shop_mobile/screens/list_product.dart';
+import 'package:gege_shop_mobile/screens/login.dart';
 import 'package:gege_shop_mobile/widgets/left_drawer.dart';
 import 'package:gege_shop_mobile/screens/product_form.dart';
-
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
   @override
-  _MyHomePageState createState() =>
-      _MyHomePageState(); // Implement createState method
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<String> tabNames = ["Lihat Product", "Add Product", "Logout"];
-  final String npm = '2306275380';
-  final String name = 'Cahya Bagus Gautama Gozales';
-  final String className = 'PBP C';
-
   bool _isExpanded = false;
 
-  // Method to build the InfoCard section displayed at the top
-  Widget _buildInfoSection() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          InfoCard(title: 'NPM', content: npm),
-          InfoCard(title: 'Name', content: name),
-          InfoCard(title: 'Class', content: className),
-        ],
-      ),
-    );
-  }
-
-  // Method to build the main content in each tab
-  Widget _buildTabContent(IconData icon) {
-    return Center(
-      child: Icon(icon, size: 100, color: Colors.black),
-    );
-  }
-
-  // Method to build the first tab content with animation
+  // Method to build the first tab content
   Widget _buildFirstTabContent() {
-    return Center(
-      child: AnimatedContainer(
-        duration: const Duration(seconds: 1),
-        width: _isExpanded ? 200.0 : 100.0,
-        height: _isExpanded ? 200.0 : 100.0,
-        color: Colors.blue,
-        curve: Curves.elasticInOut,
-      ),
-    );
+    return const ProductPage();
   }
 
-  Widget _buildSecondTabContent(){
+  // Method to build the second tab content
+  Widget _buildSecondTabContent() {
     return const ProductFormPage();
   }
 
-  // Method to handle actions when a TabBar tab is tapped
-  void _onTabTapped(BuildContext context, int index) {
-    if (index == 0) {
-      setState(() {
-        _isExpanded = !_isExpanded; // Toggle animation for the first tab
-      });
-    }
+  // Method to build the logout tab content
+  Widget _buildThirdTabContent(BuildContext context) {
+  return Center(
+    child: ElevatedButton.icon(
+      icon: const Icon(Icons.logout, color: Colors.white),
+      label: const Text(
+        "Logout",
+        style: TextStyle(color: Colors.white),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.red,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      ),
+      onPressed: () async {
+        final request = context.read<CookieRequest>();
 
-    final selectedTab = tabNames[index];
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-          SnackBar(content: Text("Kamu telah menekan tab $selectedTab!")));
-  }
+        try {
+          // Attempt to logout
+          final response = await request.logout("http://127.0.0.1:8000/auth/logout/");
+
+          // Validate response
+          if (response == null || !response.containsKey("status")) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Error: Server tidak merespons dengan benar")),
+            );
+            return;
+          }
+
+          // Handle successful logout
+          if (response['status'] == true) {
+            String message = response['message'] ?? "Logout berhasil";
+            String uname = response['username'] ?? "Pengguna";
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("$message Sampai jumpa, $uname!")),
+            );
+
+            if (context.mounted) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            }
+          } else {
+            // Handle logout failure
+            String error = response['message'] ?? "Logout gagal";
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(error)),
+            );
+          }
+        } catch (e) {
+          // Catch unexpected errors
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Error: ${e.toString()}")),
+          );
+        }
+      },
+    ),
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   _buildFirstTabContent(),
                   _buildSecondTabContent(),
-                  _buildTabContent(Icons.logout),
+                  _buildThirdTabContent(context), // Logout tab content
                 ],
               ),
             ),
@@ -103,53 +119,27 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         bottomNavigationBar: Container(
           color: Theme.of(context).colorScheme.primary,
-          child: TabBar(
+          child: const TabBar(
             labelColor: Colors.white,
             unselectedLabelColor: Colors.white70,
             indicatorColor: Colors.white,
-            onTap: (index) => _onTabTapped(context, index),
-            tabs: const [
+            tabs: [
               Tab(
-                  icon:
-                      Icon(Icons.add_shopping_cart, color: Colors.greenAccent),
-                  text: 'Lihat Product'),
+                icon: Icon(Icons.add_shopping_cart, color: Colors.greenAccent),
+                text: 'Lihat Product',
+              ),
               Tab(
-                  icon: Icon(Icons.add, color: Colors.yellow),
-                  text: 'Add Product'),
-              Tab(icon: Icon(Icons.logout, color: Colors.red), text: 'Logout'),
+                icon: Icon(Icons.add, color: Colors.yellow),
+                text: 'Add Product',
+              ),
+              Tab(
+                icon: Icon(Icons.logout, color: Colors.red),
+                text: 'Logout',
+              ),
             ],
           ),
         ),
-      drawer: const LeftDrawer(),
-      ),
-    );
-  }
-}
-
-// Widget InfoCard for displaying title and content
-class InfoCard extends StatelessWidget {
-  final String title;
-  final String content;
-
-  const InfoCard({super.key, required this.title, required this.content});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2.0,
-      child: Container(
-        width: MediaQuery.of(context).size.width / 3.5,
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8.0),
-            Text(content),
-          ],
-        ),
+        drawer: const LeftDrawer(),
       ),
     );
   }
